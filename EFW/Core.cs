@@ -23,6 +23,19 @@ namespace Module_25.EFW
         {
             optionsBuilder.UseSqlite("Data Source=Module-25.db");
         }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<User>(eb =>
+            {
+                eb.HasKey(x => x.Id);
+                eb.Property(x => x.Id).IsRequired().ValueGeneratedOnAdd();
+            });
+            modelBuilder.Entity<Book>(eb =>
+            {
+                eb.HasKey(x => x.Id);
+                eb.Property(x => x.Id).IsRequired().ValueGeneratedOnAdd();
+            });
+        }
     }
     internal class DB
     {

@@ -88,5 +88,17 @@ namespace Module_25.EFW
             _db.context.Books.Update(_book);
             _db.context.SaveChanges();
         }
+        protected internal static void DBBookGenreUpdate(DB _db, Book _book, string _genre)
+        {
+            _book.Genre = _genre;
+            _db.context.Books.Update(_book);
+            _db.context.SaveChanges();
+        }
+        protected internal static void DBBookAuthorUpdate(DB _db, Book _book, string _author)
+        {
+            _book.Author = _author;
+            _db.context.Books.Update(_book);
+            _db.context.SaveChanges();
+        }
     }
 }

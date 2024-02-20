@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Data;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -19,10 +20,8 @@ namespace Module_25.EFW
             {
                 Name = _Name;
                 Email = _Email;
-
             }
             [Key]
-            [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
             public int Id { get; }
             public string? Name { get; set; }
             public string? Email { get; set; }
@@ -41,8 +40,8 @@ namespace Module_25.EFW
                 Name = _Name;
                 PublishedDate = _PublishedDate;
             }
+
             [Key]
-            [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
             public int Id { get; }
             public string? Name { get; set; }
             public DateOnly? PublishedDate { get; set; }
@@ -60,12 +59,14 @@ namespace Module_25.EFW
             string? _username;
             int _userid;
             string? _bookname;
+            string? _genre;
+            string? _author;
             int _bookid;
             string? _email;
             DateOnly _date;
             while (onAir)
             {
-                Console.WriteLine("Command (addUser, addBook, bookToUser, getBooks, getUsers, delBook, changePubDate, exit):");
+                Console.WriteLine("Command (addUser, addBook, bookToUser, getBooks, getUsers, delBook, changePubDate, changeAuthor, changeGenre, exit):");
                 _command = Console.ReadLine();
                 if(_command == "addUser")
                 {
@@ -92,7 +93,7 @@ namespace Module_25.EFW
                 }
                 else if(_command == "bookToUser")
                 {
-                    Console.Write("Enter user fullname:");
+                    Console.Write("Enter user id:");
                     if (Int32.TryParse(Console.ReadLine(), out _userid))
                     {
                         Console.Write("Enter book id:");
@@ -117,11 +118,11 @@ namespace Module_25.EFW
                         {
                             if (_book.User != null)
                             {
-                                Console.WriteLine("ID: \"" + _book.Id + "\" Bookname: \"" + _book.Name + "\" publish date: \"" + _book.PublishedDate + "\" current reader: \"" + _book.User.Name + "\"");
+                                Console.WriteLine("ID: \"" + _book.Id + "\" Bookname: \"" + _book.Name + "\" publish date: \"" + _book.PublishedDate + "\" current reader: \"" + _book.User.Name + "\" genre: \"" + _book.Genre + "\" author: \"" + _book.Author + "\"");
                             }
                             else
                             {
-                                Console.WriteLine("ID: \"" + _book.Id + "\" Bookname: \"" + _book.Name + "\" publish date: \"" + _book.PublishedDate + "\" current reader: \"none\"");
+                                Console.WriteLine("ID: \"" + _book.Id + "\" Bookname: \"" + _book.Name + "\" publish date: \"" + _book.PublishedDate + "\" current reader: \"none\" genre: \"" + _book.Genre + "\" author: \"" + _book.Author + "\"");
                             }
                         }
                     }
@@ -169,6 +170,40 @@ namespace Module_25.EFW
                             }
                         }
                     }  
+                }
+                else if (_command == "changeGenre")
+                {
+                    Console.Write("Enter book id: ");
+                    if (Int32.TryParse(Console.ReadLine(), out _bookid))
+                    {
+                        Console.Write("Enter genre:");
+                        _genre = Console.ReadLine();
+                        if (!String.IsNullOrEmpty(_genre))
+                        {
+                            Book? _book = DBBookExec.DBBookGetById(_db, _bookid);
+                            if (_book != null)
+                            {
+                                DBBookExec.DBBookGenreUpdate(_db, _book, _genre);
+                            }
+                        }
+                    }
+                }
+                else if (_command == "changeAuthor")
+                {
+                    Console.Write("Enter book id: ");
+                    if (Int32.TryParse(Console.ReadLine(), out _bookid))
+                    {
+                        Console.Write("Enter author:");
+                        _author = Console.ReadLine();
+                        if (!String.IsNullOrEmpty(_author))
+                        {
+                            Book? _book = DBBookExec.DBBookGetById(_db, _bookid);
+                            if (_book != null)
+                            {
+                                DBBookExec.DBBookAuthorUpdate(_db, _book, _author);
+                            }
+                        }
+                    }
                 }
                 else if(_command == "exit")
                 {
