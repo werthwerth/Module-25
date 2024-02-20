@@ -13,6 +13,8 @@ namespace Module_25.EFW
         // Объекты таблицы Users
         public DbSet<User> Users { get; set; }
         public DbSet<Book> Books { get; set; }
+        public DbSet<Genre> Genres { get; set; }
+        public DbSet<Author> Authors { get; set; }
 
         public ApplicationContext()
         {
@@ -31,6 +33,16 @@ namespace Module_25.EFW
                 eb.Property(x => x.Id).IsRequired().ValueGeneratedOnAdd();
             });
             modelBuilder.Entity<Book>(eb =>
+            {
+                eb.HasKey(x => x.Id);
+                eb.Property(x => x.Id).IsRequired().ValueGeneratedOnAdd();
+            });
+            modelBuilder.Entity<Genre>(eb =>
+            {
+                eb.HasKey(x => x.Id);
+                eb.Property(x => x.Id).IsRequired().ValueGeneratedOnAdd();
+            });
+            modelBuilder.Entity<Author>(eb =>
             {
                 eb.HasKey(x => x.Id);
                 eb.Property(x => x.Id).IsRequired().ValueGeneratedOnAdd();

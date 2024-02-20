@@ -9,14 +9,14 @@ namespace Module_25.EFW
 {
     internal class DBUserExec
     {
-        protected internal static void DBUserAdd(DB _db, string _name, string _email)
+        protected internal static void Add(DB _db, string _name, string _email)
         {
             User _user = new User();
             _user.Var(_name, _email);
             _db.context.Users.Add( _user );
             _db.context.SaveChanges();
         }
-        protected internal static User? DBUserGetById(DB _db, int _id)
+        protected internal static User? GetById(DB _db, int _id)
         {
             User? _user = _db.context.Users.FirstOrDefault(u => u.Id == _id);
             if (_user == null)
@@ -28,7 +28,7 @@ namespace Module_25.EFW
                 return _user;
             }
         }
-        protected internal static User[]? DBUserGetAll(DB _db)
+        protected internal static User[]? GetAll(DB _db)
         {
             User[]? _users = _db.context.Users.ToArray();
             if (_users == null)
