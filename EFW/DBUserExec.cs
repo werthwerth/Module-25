@@ -16,9 +16,9 @@ namespace Module_25.EFW
             _db.context.Users.Add( _user );
             _db.context.SaveChanges();
         }
-        protected internal static User? DBUserGetByName(DB _db, string _name)
+        protected internal static User? DBUserGetById(DB _db, int _id)
         {
-            User? _user = _db.context.Users.FirstOrDefault(u => u.Name == _name);
+            User? _user = _db.context.Users.FirstOrDefault(u => u.Id == _id);
             if (_user == null)
             {
                 return null;

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -16,13 +17,13 @@ namespace Module_25.EFW
         {
             protected internal void Var(string _Name, string _Email)
             {
-                Id = System.Guid.NewGuid();
                 Name = _Name;
                 Email = _Email;
 
             }
             [Key]
-            public System.Guid Id { get; set; }
+            [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+            public int Id { get; }
             public string? Name { get; set; }
             public string? Email { get; set; }
         }
@@ -31,22 +32,23 @@ namespace Module_25.EFW
         {
             protected internal void Var(string _Name, DateOnly _PublishedDate, User? _User)
             {
-                Id = System.Guid.NewGuid();
                 Name = _Name;
                 PublishedDate = _PublishedDate;
                 User = _User;
             }
             protected internal void Var(string _Name, DateOnly _PublishedDate)
             {
-                Id = System.Guid.NewGuid();
                 Name = _Name;
                 PublishedDate = _PublishedDate;
             }
             [Key]
-            public System.Guid Id { get; set; }
+            [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+            public int Id { get; }
             public string? Name { get; set; }
             public DateOnly? PublishedDate { get; set; }
             public User? User { get; set; }
+            public string? Author { get; set; }
+            public string? Genre { get; set; }
         }
 
         static void Main()
@@ -56,20 +58,21 @@ namespace Module_25.EFW
             bool onAir = true;
             string? _command;
             string? _username;
+            int _userid;
             string? _bookname;
+            int _bookid;
             string? _email;
-            string? _rawDate;
             DateOnly _date;
             while (onAir)
             {
-                Console.WriteLine("Command (addUser, addBook, bookToUser, getBooks, getUsers, exit):");
+                Console.WriteLine("Command (addUser, addBook, bookToUser, getBooks, getUsers, delBook, changePubDate, exit):");
                 _command = Console.ReadLine();
                 if(_command == "addUser")
                 {
 
-                    Console.WriteLine("Enter fullname:");
+                    Console.Write("Enter fullname:");
                     _username = Console.ReadLine();
-                    Console.WriteLine("Enter email:");
+                    Console.Write("Enter email:");
                     _email = Console.ReadLine();
                     if(!String.IsNullOrEmpty(_username) && !String.IsNullOrEmpty(_email))
                     {
@@ -78,11 +81,10 @@ namespace Module_25.EFW
                 }
                 else if(_command == "addBook")
                 {
-                    Console.WriteLine("Enter bookname:");
+                    Console.Write("Enter bookname:");
                     _bookname = Console.ReadLine();
-                    Console.WriteLine("Enter published date (yyyy-mm-dd):");
-                    _rawDate = Console.ReadLine();
-                    DateOnly.TryParseExact(_rawDate, "yyyy-MM-dd", out _date);
+                    Console.Write("Enter published date (yyyy-mm-dd):");
+                    DateOnly.TryParseExact(Console.ReadLine(), "yyyy-MM-dd", out _date);
                     if(!String.IsNullOrEmpty(_bookname))
                     {
                         DBBookExec.DBBookAdd(_db, _bookname, _date);
@@ -90,37 +92,36 @@ namespace Module_25.EFW
                 }
                 else if(_command == "bookToUser")
                 {
-                    Console.WriteLine("Enter user fullname:");
-                    _username = Console.ReadLine();
-                    Console.WriteLine("Enter bookname:");
-                    _bookname = Console.ReadLine();
-                    if (!String.IsNullOrEmpty(_username) && !String.IsNullOrEmpty(_bookname))
+                    Console.Write("Enter user fullname:");
+                    if (Int32.TryParse(Console.ReadLine(), out _userid))
                     {
-                        User? _user = DBUserExec.DBUserGetByName(_db, _username);
-                        Book[]? _bookList = DBBookExec.DBUserGetByName(_db, _bookname);
-                        if (_user != null && _bookList != null && _bookList.Count() > 0)
+                        Console.Write("Enter book id:");
+                        if (Int32.TryParse(Console.ReadLine(), out _bookid))
                         {
-                            foreach (var _book in _bookList)
+                            User? _user = DBUserExec.DBUserGetById(_db, _userid);
+                            Book? _book = DBBookExec.DBBookGetById(_db, _bookid);
+                            if (_user != null && _book != null)
                             {
                                 DBBookExec.DBBookAddToUser(_db, _book, _user);
                             }
-                        }
+                        }   
                     }
+
                 }
                 else if (_command == "getBooks")
                 {
-                    Book[]? _books = DBBookExec.DBUserGetAll(_db);
+                    Book[]? _books = DBBookExec.DBBookGetAll(_db);
                     if (_books != null)
                     {
                         foreach (var _book in _books)
                         {
                             if (_book.User != null)
                             {
-                                Console.WriteLine("Bookname: " + _book.Name + " publish date: " + _book.PublishedDate + " current reader: " + _book.User.Name);
+                                Console.WriteLine("ID: \"" + _book.Id + "\" Bookname: \"" + _book.Name + "\" publish date: \"" + _book.PublishedDate + "\" current reader: \"" + _book.User.Name + "\"");
                             }
                             else
                             {
-                                Console.WriteLine("Bookname: " + _book.Name + " publish date: " + _book.PublishedDate + " current reader: none");
+                                Console.WriteLine("ID: \"" + _book.Id + "\" Bookname: \"" + _book.Name + "\" publish date: \"" + _book.PublishedDate + "\" current reader: \"none\"");
                             }
                         }
                     }
@@ -136,13 +137,38 @@ namespace Module_25.EFW
                     {
                         foreach(var _user in _userList)
                         {
-                            Console.WriteLine("Username: " + _user.Name + " email: " + _user.Email);
+                            Console.WriteLine("ID: \"" + _user.Id + "\" Username: \"" + _user.Name + "\" email: \"" + _user.Email + "\"");
                         }
                     }
                     else
                     {
                         Console.WriteLine("none");
                     }
+                }
+                else if (_command == "delBook")
+                {
+                    Console.Write("Enter book id: ");
+                    if (Int32.TryParse(Console.ReadLine(), out _bookid))
+                    {
+                        DBBookExec.DBBookDelById(_db, _bookid);
+                    }
+
+                }
+                else if (_command == "changePubDate")
+                {
+                    Console.Write("Enter book id: ");
+                    if(Int32.TryParse(Console.ReadLine(), out _bookid))
+                    {
+                        Console.Write("Enter published date (yyyy-mm-dd):");
+                        if (DateOnly.TryParseExact(Console.ReadLine(), "yyyy-MM-dd", out _date))
+                        {
+                            Book? _book = DBBookExec.DBBookGetById(_db, _bookid);
+                            if (_book != null)
+                            {
+                                DBBookExec.DBBookChangePubDate(_db, _book, _date);
+                            }
+                        }
+                    }  
                 }
                 else if(_command == "exit")
                 {
