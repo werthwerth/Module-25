@@ -95,7 +95,46 @@ namespace Module_25.EFW
             Console.WriteLine("getBooksByDates - Получить список книг по дате выхода (диапазон)");
             Console.WriteLine("getBooksByAuthor - Получить список книг по автору (id)");
             Console.WriteLine("getBooksCountByAuthor - Получить количество книг по автору (id)");
+            Console.WriteLine("findByAuthorAndName - Узнать наличие книги по автору и части названия (id, название)");
+            Console.WriteLine("findByOwnerAndName - Узнать находится ли книга у пользователя (id, id)");
+            Console.WriteLine("getCountBookOnUser - Получить количество книг у пользователя (id)");
+            Console.WriteLine("getLastBook - Получить последнюю вышедшую книгу");
+            Console.WriteLine("getBooksSortedByName - получить все книги, отсортированые по названию");
+            Console.WriteLine("getBooksSortedByPubDateDesc - получить все книги, отсортированые по дате выхода в порядке убывания");
             Console.WriteLine("exit - без комментариев");
+        }
+        public static void BooksPrinter(Book[] _books)
+        {
+            foreach (var _b in _books)
+            {
+                string? _genrename;
+                string? _authorname;
+                if (_b.Genre == null) { _genrename = "null"; } else { _genrename = _b.Genre.Name; }
+                if (_b.Author == null) { _authorname = "null"; } else { _authorname = _b.Author.Name; }
+                if (_b.User != null)
+                {
+                    Console.WriteLine(string.Format("ID: \"{0}\" Bookname: \"{1}\" publish date: \"{2}\" current reader: \"{3}\" genre: \"{4}\" author: \"{5}\"", _b.Id, _b.Name, _b.PublishedDate, _b.User.Name, _genrename, _authorname));
+                }
+                else
+                {
+                    Console.WriteLine(string.Format("ID: \"{0}\" Bookname: \"{1}\" publish date: \"{2}\" current reader: \"none\" genre: \"{3}\" author: \"{4}\"", _b.Id, _b.Name, _b.PublishedDate, _genrename, _authorname));
+                }
+            }
+        }
+        public static void BooksPrinter(Book _book)
+        {
+            string? _genrename;
+            string? _authorname;
+            if (_book.Genre == null) { _genrename = "null"; } else { _genrename = _book.Genre.Name; }
+            if (_book.Author == null) { _authorname = "null"; } else { _authorname = _book.Author.Name; }
+            if (_book.User != null)
+            {
+                Console.WriteLine(string.Format("ID: \"{0}\" Bookname: \"{1}\" publish date: \"{2}\" current reader: \"{3}\" genre: \"{4}\" author: \"{5}\"", _book.Id, _book.Name, _book.PublishedDate, _book.User.Name, _genrename, _authorname));
+            }
+            else
+            {
+                Console.WriteLine(string.Format("ID: \"{0}\" Bookname: \"{1}\" publish date: \"{2}\" current reader: \"none\" genre: \"{3}\" author: \"{4}\"", _book.Id, _book.Name, _b.PublishedDate, _genrename, _authorname));
+            }
         }
         static void Main()
         {
@@ -158,21 +197,7 @@ namespace Module_25.EFW
                     Book[]? _books = DBBookExec.GetAll(_db);
                     if (_books != null)
                     {
-                        foreach (var _b in _books)
-                        {
-                            string? _genrename;
-                            string? _authorname;
-                            if (_b.Genre == null) { _genrename = "null"; } else { _genrename = _b.Genre.Name; }
-                            if (_b.Author == null) { _authorname = "null"; } else { _authorname = _b.Author.Name; }
-                            if (_b.User != null)
-                            {
-                                Console.WriteLine(string.Format("ID: \"{0}\" Bookname: \"{1}\" publish date: \"{2}\" current reader: \"{3}\" genre: \"{4}\" author: \"{5}\"", _b.Id, _b.Name, _b.PublishedDate, _b.User.Name, _genrename, _authorname));
-                            }
-                            else
-                            {
-                                Console.WriteLine(string.Format("ID: \"{0}\" Bookname: \"{1}\" publish date: \"{2}\" current reader: \"none\" genre: \"{3}\" author: \"{4}\"", _b.Id, _b.Name, _b.PublishedDate, _genrename, _authorname));
-                            }
-                        }
+                        BooksPrinter(_books);
                     }
                     else
                     {
@@ -304,21 +329,7 @@ namespace Module_25.EFW
                             var _books = DBBookExec.GetByDates(_db, _dateFrom, _dateTo);
                             if (_books != null)
                             {
-                                foreach(var _b in _books)
-                                {
-                                    string? _genrename;
-                                    string? _authorname;
-                                    if (_b.Genre == null) { _genrename = "null"; } else { _genrename = _b.Genre.Name; }
-                                    if (_b.Author == null) { _authorname = "null"; } else { _authorname = _b.Author.Name; }
-                                    if (_b.User != null)
-                                    {
-                                        Console.WriteLine(string.Format("ID: \"{0}\" Bookname: \"{1}\" publish date: \"{2}\" current reader: \"{3}\" genre: \"{4}\" author: \"{5}\"", _b.Id, _b.Name, _b.PublishedDate, _b.User.Name, _genrename, _authorname));
-                                    }
-                                    else
-                                    {
-                                        Console.WriteLine(string.Format("ID: \"{0}\" Bookname: \"{1}\" publish date: \"{2}\" current reader: \"none\" genre: \"{3}\" author: \"{4}\"", _b.Id, _b.Name, _b.PublishedDate, _genrename, _authorname));
-                                    }
-                                }
+                                BooksPrinter(_books);
                             }
                         }
                     }
@@ -334,21 +345,7 @@ namespace Module_25.EFW
                             var _books = DBBookExec.GetByAuthor(_db, _author);
                             if( _books != null )
                             {
-                                foreach (var _b in _books )
-                                {
-                                    string? _genrename;
-                                    string? _authorname;
-                                    if (_b.Genre == null) { _genrename = "null"; } else { _genrename = _b.Genre.Name; }
-                                    if (_b.Author == null) { _authorname = "null"; } else { _authorname = _b.Author.Name; }
-                                    if (_b.User != null)
-                                    {
-                                        Console.WriteLine(string.Format("ID: \"{0}\" Bookname: \"{1}\" publish date: \"{2}\" current reader: \"{3}\" genre: \"{4}\" author: \"{5}\"", _b.Id, _b.Name, _b.PublishedDate, _b.User.Name, _genrename, _authorname));
-                                    }
-                                    else
-                                    {
-                                        Console.WriteLine(string.Format("ID: \"{0}\" Bookname: \"{1}\" publish date: \"{2}\" current reader: \"none\" genre: \"{3}\" author: \"{4}\"", _b.Id, _b.Name, _b.PublishedDate, _genrename, _authorname));
-                                    }
-                                }
+                                BooksPrinter(_books);
                             }
                         }
                         
@@ -385,6 +382,99 @@ namespace Module_25.EFW
                                 Console.WriteLine("Количество книг этого автора: " + _books.Count());
                             }
                         }
+                    }
+                }
+                else if (_command == "findByAuthorAndName")
+                {
+                    Console.Write("Введите Id автора:");
+                    if (Int32.TryParse(Console.ReadLine(), out var _id))
+                    {
+                        var _author = DBAuthorExec.GetById(_db, _id);
+                        if (_author != null)
+                        {
+                            Console.Write("Введите полное название или его часть");
+                            var _name = Console.ReadLine();
+                            if(_name != null)
+                            {
+                                var _books = DBBookExec.GetByAuthorIdAndNamePart(_db, _author, _name);
+                                if (_books != null)
+                                {
+                                    Console.WriteLine("True");
+                                }
+                                else
+                                {
+                                    Console.WriteLine("False");
+                                }
+                            }
+                        }
+                    }
+                }
+                else if (_command == "findByOwnerAndName")
+                {
+                    Console.Write("Введите Id пользователя:");
+                    if (Int32.TryParse(Console.ReadLine(), out var _userid))
+                    {
+                        Console.Write("Введите Id книги:");
+                        if (Int32.TryParse(Console.ReadLine(), out var _bookid))
+                        {
+                            Book? _book = DBBookExec.GetById(_db, _bookid);
+                            User? _user = DBUserExec.GetById(_db, _userid);
+                            if (_user != null && _book != null)
+                            {
+                                if(_book.User == _user)
+                                {
+                                    Console.WriteLine("True");
+                                }
+                                else 
+                                { 
+                                    Console.WriteLine("False"); 
+                                }
+                            }
+                        }
+                    }
+                }
+                else if (_command == "getCountBookOnUser")
+                {
+                    Console.Write("Введите Id пользователя:");
+                    if (Int32.TryParse(Console.ReadLine(), out var _userid))
+                    {
+                        User? _user = DBUserExec.GetById(_db, _userid);
+                        if (_user != null)
+                        {
+                            Book[]? _books = DBBookExec.GetByUser(_db, _user);
+                            if(_books != null)
+                            {
+                                Console.WriteLine(string.Format("У пользователя {0} книг", _books.Count()));
+                            }
+                            else
+                            {
+                                Console.WriteLine("У пользователя 0 книг");
+                            }
+                        }
+                    }
+                }
+                else if (_command == "getLastBook")
+                {
+                    var _book = DBBookExec.GetLast(_db);
+                    if (_book != null)
+                    {
+                        BooksPrinter(_book);
+                    }
+                }
+                else if (_command == "getBooksSortedByName")
+                {
+                    var _book = DBBookExec.GetAllSortedByNameAsc(_db);
+                    if (_book != null)
+                    {
+                        BooksPrinter(_book);
+                    }
+                }
+                else if (_command == "getBooksSortedByPubDateDesc")
+                {
+                    var _book = DBBookExec.GetAllSortedByPubDateDesc(_db);
+                    if (_book != null)
+                    {
+                        BooksPrinter(_book);
                     }
                 }
                 else if(_command == "exit")

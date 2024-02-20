@@ -57,7 +57,7 @@ namespace Module_25.EFW
             Book[]? _books = _db.context.Books.Where(b => b.Genre == _genre).ToArray();
             return _books;
         }
-        
+
         protected internal static Book[]? GetAll(DB _db)
         {
             Book[]? _book = _db.context.Books.ToArray();
@@ -90,6 +90,26 @@ namespace Module_25.EFW
         {
             Book[]? _books = _db.context.Books.Where(b => b.PublishedDate >= _dateFrom && b.PublishedDate <= _dateTo).ToArray();
             return _books;
+        }
+        protected internal static Book[]? GetByAuthorIdAndNamePart(DB _db, Author _author, string _name)
+        {
+            Book[]? _books = _db.context.Books.Where(b => b.Author == _author && EF.Functions.Like(b.Name, string.Format("%{0}%", _name))).ToArray();
+            return _books;
+        }
+        protected internal static Book? GetLast(DB _db)
+        {
+            Book? _book = _db.context.Books.OrderByDescending(b => b.PublishedDate).FirstOrDefault();
+            return _book;
+        }
+        protected internal static Book[]? GetAllSortedByNameAsc(DB _db)
+        {
+            Book[]? _book = _db.context.Books.OrderBy(b => b.Name).ToArray();
+            return _book;
+        }
+        protected internal static Book[]? GetAllSortedByPubDateDesc(DB _db)
+        {
+            Book[]? _book = _db.context.Books.OrderByDescending(b => b.PublishedDate).ToArray();
+            return _book;
         }
     }
 }
