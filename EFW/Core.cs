@@ -58,6 +58,8 @@ namespace Module_25.EFW
             context.Database.EnsureCreated();
             context.Users.Load();
             context.Books.Load();
+            context.Genres.Load();
+            context.Authors.Load();
         }
     }
 }

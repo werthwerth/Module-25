@@ -15,66 +15,6 @@ namespace Module_25.EFW
 {
     public class Program
     {
-        public class User
-        {
-            protected internal void Var(string _Name, string _Email)
-            {
-                Name = _Name;
-                Email = _Email;
-            }
-            [Key]
-            public int Id { get; }
-            public string? Name { get; set; }
-            public string? Email { get; set; }
-        }
-
-        public class Book
-        {
-            protected internal void Var(string _Name, DateOnly _PublishedDate, User? _User)
-            {
-                Name = _Name;
-                PublishedDate = _PublishedDate;
-                User = _User;
-            }
-            protected internal void Var(string _Name, DateOnly _PublishedDate)
-            {
-                Name = _Name;
-                PublishedDate = _PublishedDate;
-            }
-
-            [Key]
-            public int Id { get; }
-            public string? Name { get; set; }
-            public DateOnly? PublishedDate { get; set; }
-            public User? User { get; set; }
-            public Author? Author { get; set; }
-            public Genre? Genre { get; set; }
-        }
-
-        public class Genre
-        {
-            protected internal void Var(string _Name)
-            {
-                Name = _Name;
-            }
-
-            [Key]
-            public int Id { get; }
-            public string? Name { get; set; }
-
-        }
-        public class Author
-        {
-            protected internal void Var(string _Name)
-            {
-                Name = _Name;
-            }
-
-            [Key]
-            public int Id { get; }
-            public string? Name { get; set; }
-
-        }
         public static void help()
         {
             Console.WriteLine("Список реализованных команд:");
@@ -133,7 +73,7 @@ namespace Module_25.EFW
             }
             else
             {
-                Console.WriteLine(string.Format("ID: \"{0}\" Bookname: \"{1}\" publish date: \"{2}\" current reader: \"none\" genre: \"{3}\" author: \"{4}\"", _book.Id, _book.Name, _b.PublishedDate, _genrename, _authorname));
+                Console.WriteLine(string.Format("ID: \"{0}\" Bookname: \"{1}\" publish date: \"{2}\" current reader: \"none\" genre: \"{3}\" author: \"{4}\"", _book.Id, _book.Name, _book.PublishedDate, _genrename, _authorname));
             }
         }
         static void Main()
